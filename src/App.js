@@ -11,14 +11,14 @@ class App extends React.Component {
   componentDidMount() {
     let returnstate = JSON.parse(localStorage.getItem("state"))
   this.setState((returnstate === "undefind")?returnstate=this.state : returnstate)
-//this.setState({state:returnstate})
+
   }
 
   state = {
     counter: 1,
     min: 0,
     max: 5,
-  // disabled:true
+  disabled:true
   }
   IncClick = () => {
     let newcounter = this.state.counter + 1
@@ -29,23 +29,26 @@ class App extends React.Component {
   }
 
   ResetClick = () => {
-    let resetcounter = 0;
+   // let resetcounter = 0;
     this.setState({
-      counter: resetcounter
+      counter: this.state.min
     })
   }
 
   changeMaxValue = (maxValue) => {
     localStorage.setItem('maxValue', maxValue);
+  let disabled= (maxValue<0)||(maxValue===this.state.min)?true:false
+
     this.setState({
       max: maxValue,
-      disabled:false
+      disabled:disabled
     }, this.setStateValue)
   }
 
   changeMinValue = (minValue) => {
     localStorage.setItem('minValue', minValue);
-    this.setState({ min: minValue,disabled:false }, this.setStateValue)
+    let disabled= (minValue<0)||(minValue===this.state.max)||(minValue > this.state.max)?true:false
+    this.setState({ min: minValue,disabled:disabled }, this.setStateValue)
   }
 
   SetValue = () => {
@@ -88,7 +91,7 @@ let changeStatus=(this.state.counter===this.state.max)?true:false
            state={this.state} 
            disabled={(this.state.max === this.state.min) ||
             (this.state.max < this.state.min) ||
-            (this.state.min < 0) || (this.state.counter ===this.state.max )|| (this.state.max < 0)?true:false} />
+            (this.state.min < 0) || (this.state.counter ===this.state.max )|| (this.state.max < 0) || (this.state.counter ==="press set" )?true:false} />
 
 
 
@@ -107,9 +110,11 @@ let changeStatus=(this.state.counter===this.state.max)?true:false
           />
           <Button buttonname="Set" 
           callback={this.SetValue} 
-           disabled={(this.state.max === this.state.min) ||
-            (this.state.max < this.state.min) ||
-            (this.state.min < 0) || (this.state.max < 0)?true:false}/>
+
+           disabled={this.state.disabled}   
+
+          
+            />
         </div>
       </div>
     );
